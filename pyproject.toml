@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sandcastle-issue-worker"
+version = "0.1.0"
+description = "Issue-to-PR automation for a configured GitHub repository"
+requires-python = ">=3.11"
+
+[project.scripts]
+sandcastle-worker = "sandcastle.runner.main:main"
+
+[tool.setuptools]
+packages = ["sandcastle", "sandcastle.runner"]

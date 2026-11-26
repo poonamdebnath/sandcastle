@@ -1,0 +1,1 @@
+"""Sandcastle issue worker."""
