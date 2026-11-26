@@ -38,3 +38,7 @@ Run the tests with:
 ```sh
 python -m unittest discover -s sandcastle/tests -q
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
