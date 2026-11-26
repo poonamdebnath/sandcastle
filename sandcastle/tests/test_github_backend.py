@@ -587,7 +587,7 @@ class GithubBackendValidationTests(unittest.TestCase):
     def test_relative_executable_path_is_resolved_as_file(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            executable = root / "tools" / "agent.cmd"
+            executable = root / "tools" / ("agent.cmd" if os.name == "nt" else "agent.sh")
             executable.parent.mkdir(parents=True, exist_ok=True)
             executable.write_text("echo agent\n", encoding="utf-8")
             previous_cwd = Path.cwd()
@@ -597,7 +597,7 @@ class GithubBackendValidationTests(unittest.TestCase):
                     os.environ,
                     {
                         "SANDCASTLE_DEV_AGENT_COMMAND_JSON": json.dumps(
-                            [r".\tools\agent.cmd", "--brief", "{brief_path}"]
+                            [str(Path("tools") / executable.name), "--brief", "{brief_path}"]
                         )
                     },
                     clear=True,
@@ -611,7 +611,11 @@ class GithubBackendValidationTests(unittest.TestCase):
                 os.chdir(previous_cwd)
 
         self.assertTrue(result["ready"])
-        self.assertTrue(str(result["resolved_executable"]).endswith("tools\\agent.cmd"))
+        self.assertTrue(
+            str(result["resolved_executable"]).endswith(
+                str(Path("tools") / executable.name)
+            )
+        )
 
     def test_blocker_helpers_report_only_missing_dependencies(self) -> None:
         backend = _backend_blockers(
